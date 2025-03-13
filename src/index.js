@@ -1,14 +1,19 @@
+import axios from "axios";
+
 // 👉 TASK 1- Test out the following endpoints:
 
-//  https://dog.ceo/api/breeds/image/random
+//  
 
 //  * With Firefox and the Network Tab
 //  * With JS using the native fetch [STRETCH]
+// https://dog.ceo/api/breeds/image/random
 
 
 // 👉 TASK 2- Select the "entry point", the element
 // inside of which we'll inject our dog cards 
-const entryPoint = null
+const entryPoint = document.querySelector(".entry");
+console.log(entryPoint);
+
 
 
 // 👉 TASK 3- `dogCardMaker` takes an object and returns a Dog Card.
@@ -21,14 +26,28 @@ function dogCardMaker({ imageURL, breed }) {
       <h3>
     </div>
   */
+  const card = document.createElement("div");
+  const img = document.createElement("img");
+  const title = document.createElement("h3");
   // set class names, attributes and text
+    card.classList.add("dog-card");
+    img.classList.add("dog-image");
+    img.src = imageURL;
+    img.alt = `A cute ${breed}`;
+    title.textContent = `Breed: ${breed}`;
 
   // create the hierarchy
+    card.appendChild(img);
+    card.appendChild(title);
 
   // add some interactivity
-
+  card.addEventListener("click", () => {
+    card.classList.toggle("selected");
+  })
   // never forget to return!
+  return card;
 }
+
 
 
 // 👉 TASK 4- Bring the Axios library into the project using one of two methods:
@@ -41,6 +60,22 @@ function dogCardMaker({ imageURL, breed }) {
 //    * ON FAILURE: log the error to the console
 //    * IN ANY CASE: log "done" to the console
 
+
+function getDogs(count) {
+  axios.get(`https://dog.ceo/api/breeds/image/random/${count}`)
+  .then(res => {
+    res.data.message.forEach(imageURL => {
+      const card = dogCardMaker({ imageURL: imageURL, breed: "Breed"})
+    entryPoint.appendChild(card);
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  })
+  .finally(() => console.log("DONE"));
+}
+
+getDogs(15);
 
 // 👉 (OPTIONAL) TASK 6- Wrap the fetching operation inside a function `getDogs`
 // that takes a breed and a count (of dogs)
